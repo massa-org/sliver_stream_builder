@@ -1,3 +1,6 @@
+## 0.0.3
+* some test and examples
+
 ## 0.0.2+1
 * fix lock on empty builder
 

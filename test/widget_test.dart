@@ -41,7 +41,8 @@ void main() {
 
   testWidgets('Draw progress builder', (WidgetTester tester) async {
     await tester.pumpWidget(
-      _testApp(() =>Stream<String?>.periodic(Duration(milliseconds: 50)).take(2)),
+      _testApp(
+          () => Stream<String?>.periodic(Duration(milliseconds: 50)).take(2)),
     );
 
     // start progress
