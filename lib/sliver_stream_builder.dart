@@ -5,7 +5,9 @@ import 'dart:math' show max;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
 import 'sliver_stream_builder_localization.dart';
+
 export 'sliver_stream_builder_localization.dart';
 
 Widget _defaultSliverBuilder(ctx, delegate) => SliverList(
@@ -98,7 +100,9 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
 
   void onDone() {
     isDone = true;
-    if (data.isEmpty) _currentBuilder = _emptyBuilder;
+    if (data.isEmpty) {
+      setState(() => _currentBuilder = _emptyBuilder);
+    }
   }
 
   void onError(err, _) {
@@ -127,6 +131,7 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
   void didUpdateWidget(covariant SliverStreamBuilder<T> oldWidget) {
     if (identical(oldWidget.stream, widget.stream) != true) {
       _currentBuilder = _builder;
+      isDone = false;
       data = [];
       sub.cancel();
       sub = widget.stream.listen(
