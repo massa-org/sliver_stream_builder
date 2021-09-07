@@ -41,6 +41,8 @@ class SliverStreamBuilder<T> extends StatefulWidget {
 
   final StreamSliverBuilderLocalization? localization;
 
+  final bool keepOldDataOnLoading;
+
   SliverStreamBuilder({
     Key? key,
 
@@ -65,7 +67,11 @@ class SliverStreamBuilder<T> extends StatefulWidget {
     /// display as last element when error happens
     this.errorBuilder,
     this.localization,
+
+    /// keep old data when stream change and rebuild only when new event occur
+    this.keepOldDataOnLoading = false,
   }) : super(key: key);
+  
   @override
   _SliverStreamBuilderState<T> createState() => _SliverStreamBuilderState<T>();
 }
@@ -79,7 +85,7 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
 
   int lastVisible = 0;
 
-  late StreamSubscription sub;
+  late StreamSubscription<T> sub;
 
   late StreamSliverBuilderLocalization localization =
       widget.localization ?? StreamSliverBuilderLocalization.of(context);
@@ -127,19 +133,48 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
     );
   }
 
-  @override
-  void didUpdateWidget(covariant SliverStreamBuilder<T> oldWidget) {
-    if (identical(oldWidget.stream, widget.stream) != true) {
+  void _finalCleanAndReSub() {
+    setState(() {
       _currentBuilder = _builder;
       isDone = false;
       data = [];
+    });
+    if (widget.keepOldDataOnLoading) {
+      sub.onData(addElement);
+      sub.onDone(onDone);
+      sub.onError(onError);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant SliverStreamBuilder<T> oldWidget) {
+    if (identical(oldWidget.stream, widget.stream) != true) {
       sub.cancel();
+      // if keep is true add single call wrapper to avoid show loading on first rebuild
+      final _keep = widget.keepOldDataOnLoading;
       sub = widget.stream.listen(
-        addElement,
-        onDone: onDone,
-        onError: onError,
+        _keep
+            ? (e) {
+                _finalCleanAndReSub();
+                addElement(e);
+              }
+            : addElement,
+        onDone: _keep
+            ? () {
+                _finalCleanAndReSub();
+                onDone();
+              }
+            : onDone,
+        onError: _keep
+            ? (e, s) {
+                _finalCleanAndReSub();
+                onError(e, s);
+              }
+            : onError,
       );
     }
+    // immediate clean
+    if (widget.keepOldDataOnLoading == false) _finalCleanAndReSub();
     super.didUpdateWidget(oldWidget);
   }
 

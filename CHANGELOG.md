@@ -1,3 +1,6 @@
+## 0.0.4
+* add keepOldDataOnLoading behavior
+
 ## 0.0.3
 * some test and examples
 
