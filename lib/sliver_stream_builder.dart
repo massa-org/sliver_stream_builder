@@ -126,6 +126,7 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
   @override
   void didUpdateWidget(covariant SliverStreamBuilder<T> oldWidget) {
     if (identical(oldWidget.stream, widget.stream) != true) {
+      _currentBuilder = _builder;
       data = [];
       sub.cancel();
       sub = widget.stream.listen(
@@ -144,7 +145,8 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
   }
 
   Widget? _emptyBuilder(context, i) {
-    return widget.emptyBuilder?.call(context);
+    if (i == 0) return widget.emptyBuilder?.call(context);
+    return null;
   }
 
   Widget? Function(
