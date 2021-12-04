@@ -2,14 +2,24 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:sliver_stream_builder/sliver_stream_builder.dart';
 
-class ImagesGrid extends StatelessWidget {
-  const ImagesGrid({Key? key}) : super(key: key);
+Stream<String> load() {
+  var i = 0;
+  return dataStreamWrapper(
+    () => Future.delayed(
+      Duration(milliseconds: 300),
+      () => ['https://picsum.photos/id/${i++}/200/200'],
+    ),
+  );
+}
+
+class DataStreamExample extends StatelessWidget {
+  const DataStreamExample({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('grid example'),
+        title: Text('Data Stream example'),
       ),
       body: SafeArea(
         child: CustomScrollView(
@@ -23,10 +33,7 @@ class ImagesGrid extends StatelessWidget {
                   mainAxisSpacing: 8,
                 ),
               ),
-              stream: Stream.periodic(
-                Duration(milliseconds: 300),
-                (id) => 'https://picsum.photos/id/$id/200/200',
-              ).take(100),
+              stream: load(),
               builder: (ctx, url) => CachedNetworkImage(imageUrl: url),
             ),
           ],

@@ -9,6 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'sliver_stream_builder_localization.dart';
 
 export 'sliver_stream_builder_localization.dart';
+export 'data_stream_wrapper.dart';
 
 Widget _defaultSliverBuilder(ctx, delegate) => SliverList(
       delegate: delegate,
@@ -71,7 +72,7 @@ class SliverStreamBuilder<T> extends StatefulWidget {
     /// keep old data when stream change and rebuild only when new event occur
     this.keepOldDataOnLoading = false,
   }) : super(key: key);
-  
+
   @override
   _SliverStreamBuilderState<T> createState() => _SliverStreamBuilderState<T>();
 }
@@ -242,7 +243,10 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
 
       sub.resume();
       return widget.progressBuilder?.call(context) ??
-          Center(child: CircularProgressIndicator());
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Center(child: CircularProgressIndicator()),
+          );
     }
 
     return widget.builder(ctx, data[i]);
