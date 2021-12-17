@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:math' show max;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'sliver_stream_builder_localization.dart';
 
@@ -44,7 +43,7 @@ class SliverStreamBuilder<T> extends StatefulWidget {
 
   final bool keepOldDataOnLoading;
 
-  SliverStreamBuilder({
+  const SliverStreamBuilder({
     Key? key,
 
     /// must be not broadcast to react on pause,resume
@@ -106,22 +105,26 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
   }
 
   void onDone() {
-    isDone = true;
-    if (data.isEmpty) {
-      setState(() => _currentBuilder = _emptyBuilder);
-    }
+    setState(() {
+      isDone = true;
+      if (data.isEmpty) {
+        _currentBuilder = _emptyBuilder;
+      }
+    });
   }
 
   void onError(err, _) {
-    error = err;
-    sub.pause();
-    setState(() {});
+    setState(() {
+      error = err;
+      sub.pause();
+    });
   }
 
   void _resumeAfterError() {
-    error = null;
-    sub.resume();
-    setState(() {});
+    setState(() {
+      error = null;
+      sub.resume();
+    });
   }
 
   @override
@@ -207,7 +210,7 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
     return Center(
       child: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 8,
           ),
           Text(
@@ -243,8 +246,8 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
 
       sub.resume();
       return widget.progressBuilder?.call(context) ??
-          Padding(
-            padding: const EdgeInsets.all(16),
+          const Padding(
+            padding: EdgeInsets.all(16),
             child: Center(child: CircularProgressIndicator()),
           );
     }

@@ -9,13 +9,13 @@ class SimpleSliver extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('simple sliver'),
+        title: const Text('simple sliver'),
       ),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
             SliverStreamBuilder<String>(
-              stream: Stream.periodic(Duration(milliseconds: 300),
+              stream: Stream.periodic(const Duration(milliseconds: 300),
                   (id) => 'https://picsum.photos/id/$id/200/200').take(100),
               builder: (ctx, url) => ListTile(
                 title: Text(url),

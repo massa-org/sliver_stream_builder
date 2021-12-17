@@ -4,9 +4,11 @@ import 'package:examples/images_grid.dart';
 import 'package:examples/simple.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,35 +18,35 @@ class MyApp extends StatelessWidget {
       ),
       home: Builder(builder: (context) {
         return Scaffold(
-          appBar: AppBar(title: Text('SliverStreamBuilder example')),
+          appBar: AppBar(title: const Text('SliverStreamBuilder example')),
           body: ListView(
             children: [
               ListTile(
-                title: Text('Grid sliver'),
+                title: const Text('Grid sliver'),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => ImagesGrid()),
+                  MaterialPageRoute(builder: (_) => const ImagesGrid()),
                 ),
               ),
               ListTile(
-                title: Text('Empty'),
+                title: const Text('Empty'),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => EmptyStream()),
+                  MaterialPageRoute(builder: (_) => const EmptyStream()),
                 ),
               ),
               ListTile(
-                title: Text('Simple list'),
+                title: const Text('Simple list'),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => SimpleSliver()),
+                  MaterialPageRoute(builder: (_) => const SimpleSliver()),
                 ),
               ),
               ListTile(
-                title: Text('Data Stream example'),
+                title: const Text('Data Stream example'),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => DataStreamExample()),
+                  MaterialPageRoute(builder: (_) => const DataStreamExample()),
                 ),
               ),
             ],

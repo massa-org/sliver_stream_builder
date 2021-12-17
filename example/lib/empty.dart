@@ -9,16 +9,16 @@ class EmptyStream extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('empty stream example'),
+        title: const Text('empty stream example'),
       ),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
             SliverStreamBuilder<String>(
-              stream: Stream.empty(),
-              emptyBuilder: (_) => Center(
+              stream: const Stream.empty(),
+              emptyBuilder: (_) => const Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(64.0),
+                  padding: EdgeInsets.all(64.0),
                   child: Text('Some Empty Placeholder'),
                 ),
               ),

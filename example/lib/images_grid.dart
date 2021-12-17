@@ -9,7 +9,7 @@ class ImagesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('grid example'),
+        title: const Text('grid example'),
       ),
       body: SafeArea(
         child: CustomScrollView(
@@ -17,14 +17,14 @@ class ImagesGrid extends StatelessWidget {
             SliverStreamBuilder<String>(
               sliverBuilder: (_, delegate) => SliverGrid(
                 delegate: delegate,
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 100,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                 ),
               ),
               stream: Stream.periodic(
-                Duration(milliseconds: 300),
+                const Duration(milliseconds: 300),
                 (id) => 'https://picsum.photos/id/$id/200/200',
               ).take(100),
               builder: (ctx, url) => CachedNetworkImage(imageUrl: url),

@@ -17,9 +17,9 @@ MaterialApp _testApp(
           slivers: [
             SliverStreamBuilder<String?>(
               stream: stream(),
-              emptyBuilder: (_) => Text('empty_builder'),
+              emptyBuilder: (_) => const Text('empty_builder'),
               builder: (context, item) => Text(item ?? 'item'),
-              progressBuilder: (_) => Text('progress'),
+              progressBuilder: (_) => const Text('progress'),
             ),
           ],
         ),
@@ -30,7 +30,7 @@ MaterialApp _testApp(
 
 void main() {
   testWidgets('Use empty builder on empty stream', (WidgetTester tester) async {
-    await tester.pumpWidget(_testApp(() => Stream.empty()));
+    await tester.pumpWidget(_testApp(() => const Stream.empty()));
 
     await tester.pumpAndSettle();
 
@@ -41,8 +41,8 @@ void main() {
 
   testWidgets('Draw progress builder', (WidgetTester tester) async {
     await tester.pumpWidget(
-      _testApp(
-          () => Stream<String?>.periodic(Duration(milliseconds: 50)).take(2)),
+      _testApp(() =>
+          Stream<String?>.periodic(const Duration(milliseconds: 50)).take(2)),
     );
 
     // start progress
@@ -50,11 +50,11 @@ void main() {
     expect(find.text('empty_builder'), findsNothing);
     expect(find.text('progress'), findsOneWidget);
     expect(find.text('item'), findsNothing);
-    await tester.pump(Duration(milliseconds: 50));
+    await tester.pump(const Duration(milliseconds: 50));
     expect(find.text('empty_builder'), findsNothing);
     expect(find.text('progress'), findsOneWidget);
     expect(find.text('item'), findsOneWidget);
-    await tester.pump(Duration(milliseconds: 50));
+    await tester.pump(const Duration(milliseconds: 50));
     expect(find.text('empty_builder'), findsNothing);
     expect(find.text('progress'), findsOneWidget);
     expect(find.text('item'), findsNWidgets(2));

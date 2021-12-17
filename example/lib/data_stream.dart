@@ -6,7 +6,7 @@ Stream<String> load() {
   var i = 0;
   return dataStreamWrapper(
     () => Future.delayed(
-      Duration(milliseconds: 300),
+      const Duration(milliseconds: 300),
       () => ['https://picsum.photos/id/${i++}/200/200'],
     ),
   );
@@ -19,7 +19,7 @@ class DataStreamExample extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Data Stream example'),
+        title: const Text('Data Stream example'),
       ),
       body: SafeArea(
         child: CustomScrollView(
@@ -27,7 +27,7 @@ class DataStreamExample extends StatelessWidget {
             SliverStreamBuilder<String>(
               sliverBuilder: (_, delegate) => SliverGrid(
                 delegate: delegate,
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 100,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
