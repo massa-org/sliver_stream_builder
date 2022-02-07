@@ -33,28 +33,31 @@ Stream<T> dataStreamWrapper<T>(
   var active = true;
   Completer? pause;
 
-  final controller = StreamController<T>(
+  late final StreamController<T> controller;
+
+  controller = StreamController<T>(
     onCancel: () {
       active = false;
+      controller.close();
     },
     onPause: () => pause = Completer(),
     onResume: () {
       pause?.complete();
       pause = null;
     },
+    onListen: () async {
+      while (active) {
+        await pause?.future;
+        try {
+          final res = await next();
+          if (res == null || active == false) return;
+          res.forEach(controller.add);
+        } catch (err, stackTrace) {
+          controller.addError(err, stackTrace);
+        }
+      }
+    },
   );
 
-  () async {
-    while (active) {
-      await pause?.future;
-      try {
-        final res = await next();
-        if (res == null || active == false) break;
-        res.forEach(controller.add);
-      } catch (err) {
-        controller.addError(err);
-      }
-    }
-  }();
   return controller.stream;
 }
