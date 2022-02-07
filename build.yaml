@@ -1,0 +1,10 @@
+# https://pub.dev/packages/build_config
+targets:
+  $default:
+    builders:
+      fast_i18n:
+        options:
+          base_locale: en
+          translation_class_visibility: public
+          fallback_strategy: base_locale
+          translate_var: L

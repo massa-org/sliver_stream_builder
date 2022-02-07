@@ -15,7 +15,7 @@ class ImagesGrid extends StatelessWidget {
         child: CustomScrollView(
           slivers: [
             SliverStreamBuilder<String>(
-              sliverBuilder: (_, delegate) => SliverGrid(
+              sliverBuilder: (_, delegate, {key}) => SliverGrid(
                 delegate: delegate,
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 100,

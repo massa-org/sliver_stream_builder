@@ -1,3 +1,15 @@
+## [0.1.0] - 2022-02-08
+
+feat:
+- change error processing, now can define custom onErrorRetry function
+- add stackTrace preserve
+- add key param to sliver builder
+- imporve data stream wrapper
+
+fix: 
+- data clean on any widget changes
+
+
 ## [0.0.6] - 2021-12-18
 
 bugfix:

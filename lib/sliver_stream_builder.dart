@@ -4,15 +4,11 @@ import 'dart:async';
 import 'dart:math' show max;
 
 import 'package:flutter/material.dart';
+import './localization/strings.g.dart';
 
-import 'sliver_stream_builder_localization.dart';
-
-export 'sliver_stream_builder_localization.dart';
 export 'data_stream_wrapper.dart';
 
-Widget _defaultSliverBuilder(ctx, delegate) => SliverList(
-      delegate: delegate,
-    );
+part 'default_builders.dart';
 
 // this behavior can't be implemented as delegate because need state
 
@@ -22,24 +18,23 @@ Widget _defaultSliverBuilder(ctx, delegate) => SliverList(
 class SliverStreamBuilder<T> extends StatefulWidget {
   /// Stream can't be changed later
   final Stream<T> stream;
-  final Widget Function(BuildContext context, T v) builder;
-  final Widget Function(BuildContext context)? progressBuilder;
+  final Widget Function(BuildContext context, T item) builder;
 
-  final Widget Function(BuildContext context)? emptyBuilder;
-  final Widget Function(BuildContext context, SliverChildDelegate delegate)?
-      sliverBuilder;
+  final Widget Function(BuildContext context) progressBuilder;
+  final Widget Function(BuildContext context) emptyBuilder;
+
+  final SliverBuilder sliverBuilder;
+
+  final void Function(
+    dynamic error,
+    StackTrace? stackTrace,
+    void Function() streamResumeCb,
+  ) onErrorRetry;
 
   /// Error processing.
   /// If component recieve error from stream, component request pause on stream and await while resume call
-  final String Function(dynamic)? errorTextExtractor;
-  final Widget? Function(
-    BuildContext context,
-    dynamic err,
-    void Function() resumeCb,
-    String errorText,
-  )? errorBuilder;
-
-  final StreamSliverBuilderLocalization? localization;
+  final String Function(BuildContext context, dynamic error) errorTextExtractor;
+  final ErrorBuilder errorBuilder;
 
   final bool keepOldDataOnLoading;
 
@@ -49,27 +44,25 @@ class SliverStreamBuilder<T> extends StatefulWidget {
     /// must be not broadcast to react on pause,resume
     required this.stream,
 
+    /// keep old data when stream change and rebuild only when new event occur
+    this.keepOldDataOnLoading = false,
+
     /// item builder
     required this.builder,
 
     /// sliver builder where items has been displayed
     this.sliverBuilder = _defaultSliverBuilder,
-
-    /// progress indicator builder if not provided default is used
-    this.progressBuilder,
+    this.progressBuilder = _defaultProgressBuilder,
 
     /// display if stream done without data emit
-    this.emptyBuilder,
-
-    /// extract text from error that passed to errorBuilder
-    this.errorTextExtractor,
+    this.emptyBuilder = _defaultEmptyBuilder,
 
     /// display as last element when error happens
-    this.errorBuilder,
-    this.localization,
+    this.errorBuilder = _defaultErrorBuilder,
+    this.onErrorRetry = _defaultRetry,
 
-    /// keep old data when stream change and rebuild only when new event occur
-    this.keepOldDataOnLoading = false,
+    /// extract text from error that passed to errorBuilder
+    this.errorTextExtractor = _defaultErrorTextExtractor,
   }) : super(key: key);
 
   @override
@@ -78,7 +71,9 @@ class SliverStreamBuilder<T> extends StatefulWidget {
 
 class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
   List<T> data = [];
+
   dynamic error;
+  StackTrace? stackTrace;
 
   bool isDone = false;
   bool get isError => error != null;
@@ -87,11 +82,9 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
 
   late StreamSubscription<T> sub;
 
-  late StreamSliverBuilderLocalization localization =
-      widget.localization ?? StreamSliverBuilderLocalization.of(context);
-
-  void addElement(T e) {
+  void onData(T e) {
     error = null;
+    stackTrace = null;
     data.add(e);
     // initiate rebuild only if added child in visible area.
     // else just add it to data list and wait until user scroll.
@@ -105,80 +98,75 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
   }
 
   void onDone() {
+    setState(() => isDone = true);
+  }
+
+  void onError(dynamic err, StackTrace stackTrace) {
     setState(() {
-      isDone = true;
-      if (data.isEmpty) {
-        _currentBuilder = _emptyBuilder;
-      }
+      error = err;
+      this.stackTrace = stackTrace;
+      sub.pause();
     });
   }
 
-  void onError(err, _) {
-    setState(() {
-      error = err;
-      sub.pause();
-    });
+  void onDataKeep(T e) {
+    finalCleanAndReSub();
+    onData(e);
+  }
+
+  void onDoneKeep() {
+    finalCleanAndReSub();
+    onDone();
+  }
+
+  void onErrorKeep(dynamic err, StackTrace stackTrace) {
+    finalCleanAndReSub();
+    onError(err, stackTrace);
   }
 
   void _resumeAfterError() {
     setState(() {
       error = null;
+      stackTrace = null;
       sub.resume();
     });
   }
 
   @override
   void initState() {
+    resub();
     super.initState();
+  }
+
+  void resub() {
     sub = widget.stream.listen(
-      addElement,
-      onDone: onDone,
-      onError: onError,
+      onDataKeep,
+      onDone: onDoneKeep,
+      onError: onErrorKeep,
     );
   }
 
-  void _finalCleanAndReSub() {
+  void finalCleanAndReSub() {
     setState(() {
-      _currentBuilder = _builder;
       isDone = false;
       data = [];
     });
-    if (widget.keepOldDataOnLoading) {
-      sub.onData(addElement);
-      sub.onDone(onDone);
-      sub.onError(onError);
-    }
+
+    sub.onData(onData);
+    sub.onDone(onDone);
+    sub.onError(onError);
   }
 
   @override
   void didUpdateWidget(covariant SliverStreamBuilder<T> oldWidget) {
     if (identical(oldWidget.stream, widget.stream) != true) {
       sub.cancel();
-      // if keep is true add single call wrapper to avoid show loading on first rebuild
-      final _keep = widget.keepOldDataOnLoading;
-      sub = widget.stream.listen(
-        _keep
-            ? (e) {
-                _finalCleanAndReSub();
-                addElement(e);
-              }
-            : addElement,
-        onDone: _keep
-            ? () {
-                _finalCleanAndReSub();
-                onDone();
-              }
-            : onDone,
-        onError: _keep
-            ? (e, s) {
-                _finalCleanAndReSub();
-                onError(e, s);
-              }
-            : onError,
-      );
+      resub();
+
+      // clear data only if stream change
+      if (widget.keepOldDataOnLoading == false) finalCleanAndReSub();
     }
-    // immediate clean
-    if (widget.keepOldDataOnLoading == false) _finalCleanAndReSub();
+
     super.didUpdateWidget(oldWidget);
   }
 
@@ -188,80 +176,42 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
     super.dispose();
   }
 
-  Widget? _emptyBuilder(context, i) {
-    if (i == 0) return widget.emptyBuilder?.call(context);
-    return null;
-  }
-
-  Widget? Function(
-    BuildContext context,
-    dynamic err,
-    void Function() resume,
-    String errorText,
-  ) get _errorBuilder => widget.errorBuilder ?? _defaultErrorBuilder;
-
-  Widget? _defaultErrorBuilder(
-    BuildContext context,
-    dynamic err,
-    void Function() resumeCb,
-    String errorText,
-  ) {
-    // final locallization = StreamSliverBuilderLocalization.of(context);
-    return Center(
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 8,
-          ),
-          Text(
-            errorText,
-            style: TextStyle(color: Theme.of(context).errorColor),
-          ),
-          TextButton(
-            onPressed: resumeCb,
-            child: Text(localization.errorRetryButtonText),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget? _builder(ctx, i) {
-    lastVisible = max(lastVisible, i);
-
-    if (i > data.length) {
+  Widget? _builder(BuildContext context, int id) {
+    if (isDone && data.isEmpty) {
+      if (id == 0) return widget.emptyBuilder(context);
       return null;
     }
-    if (i == data.length) {
+    lastVisible = max(lastVisible, id);
+
+    if (id > data.length) {
+      return null;
+    }
+    if (id == data.length) {
       if (isDone) return null;
       if (isError) {
-        return _errorBuilder(
-          ctx,
-          error,
-          _resumeAfterError,
-          widget.errorTextExtractor?.call(error) ??
-              localization.errorMessageDefaultText,
+        final errFn = widget.onErrorRetry;
+        return widget.errorBuilder(
+          context: context,
+          error: error,
+          stackTrace: stackTrace,
+          retryCb: () => errFn(error, stackTrace, _resumeAfterError),
+          errorMessage: widget.errorTextExtractor(context, error),
         );
       }
 
       sub.resume();
-      return widget.progressBuilder?.call(context) ??
-          const Padding(
-            padding: EdgeInsets.all(16),
-            child: Center(child: CircularProgressIndicator()),
-          );
+      return widget.progressBuilder(context);
     }
 
-    return widget.builder(ctx, data[i]);
+    return widget.builder(context, data[id]);
   }
-
-  late Widget? Function(BuildContext, int) _currentBuilder = _builder;
 
   @override
   Widget build(BuildContext context) {
-    return widget.sliverBuilder!(
+    return widget.sliverBuilder(
       context,
-      SliverChildBuilderDelegate(_currentBuilder),
+      SliverChildBuilderDelegate(_builder),
+      key: widget.key,
     );
   }
 }
