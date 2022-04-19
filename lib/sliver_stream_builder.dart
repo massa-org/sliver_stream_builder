@@ -33,7 +33,8 @@ class SliverStreamBuilder<T> extends StatefulWidget {
 
   /// Error processing.
   /// If component recieve error from stream, component request pause on stream and await while resume call
-  final String Function(BuildContext context, dynamic error) errorTextExtractor;
+  final String? Function(BuildContext context, dynamic error)
+      errorTextExtractor;
   final ErrorBuilder errorBuilder;
 
   final bool keepOldDataOnLoading;

@@ -72,6 +72,4 @@ void _defaultRetry(
   return streamResumeCb();
 }
 
-String _defaultErrorTextExtractor(BuildContext _, __) {
-  return "TODO default error";
-}
+String? _defaultErrorTextExtractor(BuildContext _, __) => null;

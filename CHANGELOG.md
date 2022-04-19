@@ -1,3 +1,8 @@
+## [0.1.1] - 2022-02-20
+
+fix: 
+- default text extractor return invalid data
+
 ## [0.1.0] - 2022-02-08
 
 feat:
