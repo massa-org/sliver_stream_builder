@@ -50,12 +50,13 @@ Stream<T> dataStreamWrapper<T>(
         await pause?.future;
         try {
           final res = await next();
-          if (res == null || active == false) return;
+          if (res == null || active == false) break;
           res.forEach(controller.add);
         } catch (err, stackTrace) {
           controller.addError(err, stackTrace);
         }
       }
+      controller.close();
     },
   );
 

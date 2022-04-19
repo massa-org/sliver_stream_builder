@@ -1,3 +1,8 @@
+## [0.1.1] - 2022-04-19
+
+fix:
+- close stream on data ends
+
 ## [0.1.0] - 2022-02-08
 
 feat:
