@@ -1,6 +1,6 @@
 name: sliver_stream_builder
 description: Package to transform data stream to sliver list or sliver grid
-version: 0.1.1
+version: 0.1.2
 homepage: https://github.com/massa-org/sliver_stream_builder
 
 environment:
