@@ -25,6 +25,8 @@ class SliverStreamBuilder<T> extends StatefulWidget {
 
   final SliverBuilder sliverBuilder;
 
+  // function that called when stream emit error and been paused
+  // by default simply call `streamResumeCb` that resume stream
   final void Function(
     dynamic error,
     StackTrace? stackTrace,
@@ -192,11 +194,13 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
       if (isError) {
         final errFn = widget.onErrorRetry;
         return widget.errorBuilder(
-          context: context,
-          error: error,
-          stackTrace: stackTrace,
-          retryCb: () => errFn(error, stackTrace, _resumeAfterError),
-          errorMessage: widget.errorTextExtractor(context, error),
+          context,
+          SliverStreamBuilderErrorObject(
+            error: error,
+            stackTrace: stackTrace,
+            retryCb: () => errFn(error, stackTrace, _resumeAfterError),
+            errorMessage: widget.errorTextExtractor(context, error),
+          ),
         );
       }
 

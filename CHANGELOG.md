@@ -1,3 +1,8 @@
+## [0.2.0] - 2022-05-06
+
+feat:
+- change error builder signature 
+
 ## [0.1.2] - 2022-02-20
 
 fix: 

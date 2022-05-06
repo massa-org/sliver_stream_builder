@@ -1,22 +1,28 @@
 part of 'sliver_stream_builder.dart';
 
-typedef ErrorBuilder = Widget Function({
-  required BuildContext context,
-  required dynamic error,
-  required void Function() retryCb,
-  required String? errorMessage,
-  StackTrace? stackTrace,
-  Key? key,
-});
+class SliverStreamBuilderErrorObject {
+  final dynamic error;
+  final StackTrace? stackTrace;
+  final void Function() retryCb;
+  final String? errorMessage;
 
-Widget _defaultErrorBuilder({
-  required BuildContext context,
-  required dynamic error,
-  required void Function() retryCb,
-  required String? errorMessage,
-  StackTrace? stackTrace,
-  Key? key,
-}) {
+  SliverStreamBuilderErrorObject({
+    required this.error,
+    required this.retryCb,
+    required this.errorMessage,
+    required this.stackTrace,
+  });
+}
+
+typedef ErrorBuilder = Widget Function(
+  BuildContext context,
+  SliverStreamBuilderErrorObject error,
+);
+
+Widget _defaultErrorBuilder(
+  BuildContext context,
+  SliverStreamBuilderErrorObject error,
+) {
   return Center(
     child: Column(
       children: [
@@ -24,11 +30,11 @@ Widget _defaultErrorBuilder({
           height: 8,
         ),
         Text(
-          errorMessage ?? L.genericLoadingError,
+          error.errorMessage ?? L.genericLoadingError,
           style: TextStyle(color: Theme.of(context).errorColor),
         ),
         TextButton(
-          onPressed: retryCb,
+          onPressed: error.retryCb,
           child: Text(L.retryButton),
         )
       ],
