@@ -69,7 +69,7 @@ class SliverStreamBuilder<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SliverStreamBuilderState<T> createState() => _SliverStreamBuilderState<T>();
+  State<SliverStreamBuilder<T>> createState() => _SliverStreamBuilderState<T>();
 }
 
 class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {

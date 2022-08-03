@@ -30,32 +30,37 @@ import 'dart:async';
 Stream<T> dataStreamWrapper<T>(
   FutureOr<List<T>?> Function() next,
 ) {
-  var active = true;
+  var closed = false;
   Completer? pause;
 
+  void _resume() {
+    pause?.complete();
+    pause = null;
+  }
+
+  // latet initialization for acces from callbacks
   late final StreamController<T> controller;
 
   controller = StreamController<T>(
     onCancel: () {
-      active = false;
+      closed = true;
+      _resume();
+      // if onListen is not called we must close controller here
       controller.close();
     },
     onPause: () => pause = Completer(),
-    onResume: () {
-      pause?.complete();
-      pause = null;
-    },
+    onResume: _resume,
     onListen: () async {
-      while (active) {
-        await pause?.future;
+      do {
         try {
           final res = await next();
-          if (res == null || active == false) break;
+          if (res == null || closed) break;
           res.forEach(controller.add);
         } catch (err, stackTrace) {
           controller.addError(err, stackTrace);
         }
-      }
+        await pause?.future;
+      } while (!closed);
       controller.close();
     },
   );

@@ -1,3 +1,8 @@
+## [0.2.1] - 2022-08-03
+
+fix: 
+- dataStreamWrapper stalling next function
+
 ## [0.2.0] - 2022-05-06
 
 feat:
