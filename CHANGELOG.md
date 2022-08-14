@@ -1,3 +1,8 @@
+## [0.3.0] - 2022-08-14
+
+feat(helper):
+- add data stream helper to prevent missuse and simplify work with state
+
 ## [0.2.1] - 2022-08-03
 
 fix: 

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import './localization/strings.g.dart';
 
 export 'data_stream_wrapper.dart';
+export 'data_stream_helper.dart' show dataStreamHelper;
 
 part 'default_builders.dart';
 
