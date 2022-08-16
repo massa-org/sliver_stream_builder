@@ -2,26 +2,23 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:sliver_stream_builder/sliver_stream_builder.dart';
 
-Stream<String> load() {
+Stream<String> loadError() {
   var i = 0;
   return dataStreamWrapper(
     () async {
-      return Future.delayed(
-        const Duration(milliseconds: 300),
-        () => ['https://picsum.photos/id/${i++}/200/200'],
-      );
+      throw 'errror';
     },
   );
 }
 
-class DataStreamExample extends StatelessWidget {
-  const DataStreamExample({Key? key}) : super(key: key);
+class SliverStreamErrorExample extends StatelessWidget {
+  const SliverStreamErrorExample({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Data Stream example'),
+        title: const Text('Sliver stream builder error example'),
       ),
       body: SafeArea(
         child: CustomScrollView(
@@ -35,7 +32,7 @@ class DataStreamExample extends StatelessWidget {
                   mainAxisSpacing: 8,
                 ),
               ),
-              stream: load(),
+              stream: loadError(),
               builder: (ctx, url) => CachedNetworkImage(imageUrl: url),
             ),
           ],

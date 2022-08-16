@@ -1,3 +1,10 @@
+## [0.3.1] - 2022-08-16
+
+feat(logs):
+- logs error from SliverStreamBuilder in debug mode
+fix:
+- example build
+
 ## [0.3.0] - 2022-08-14
 
 feat(helper):

@@ -1,8 +1,10 @@
 library sliver_stream_builder;
 
 import 'dart:async';
+import 'dart:developer';
 import 'dart:math' show max;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import './localization/strings.g.dart';
 
@@ -42,6 +44,8 @@ class SliverStreamBuilder<T> extends StatefulWidget {
 
   final bool keepOldDataOnLoading;
 
+  final bool enableDebugLog;
+
   const SliverStreamBuilder({
     Key? key,
 
@@ -67,6 +71,7 @@ class SliverStreamBuilder<T> extends StatefulWidget {
 
     /// extract text from error that passed to errorBuilder
     this.errorTextExtractor = _defaultErrorTextExtractor,
+    this.enableDebugLog = true,
   }) : super(key: key);
 
   @override
@@ -105,9 +110,16 @@ class _SliverStreamBuilderState<T> extends State<SliverStreamBuilder<T>> {
     setState(() => isDone = true);
   }
 
-  void onError(dynamic err, StackTrace stackTrace) {
+  void onError(dynamic error, StackTrace stackTrace) {
+    if (kDebugMode && widget.enableDebugLog) {
+      log(
+        "SliverStreamBuilder get error in stream",
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
     setState(() {
-      error = err;
+      this.error = error;
       this.stackTrace = stackTrace;
       sub.pause();
     });
