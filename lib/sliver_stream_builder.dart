@@ -11,6 +11,8 @@ import './localization/strings.g.dart';
 export 'data_stream_wrapper.dart';
 export 'data_stream_helper.dart' show dataStreamHelper;
 
+export 'localization/localization.dart' show sliverStreamBuilderLocalization;
+
 part 'default_builders.dart';
 
 // this behavior can't be implemented as delegate because need state

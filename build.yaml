@@ -2,7 +2,7 @@
 targets:
   $default:
     builders:
-      fast_i18n:
+      slang_build_runner:
         options:
           base_locale: en
           translation_class_visibility: public

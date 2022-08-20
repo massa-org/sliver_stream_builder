@@ -1,3 +1,8 @@
+## [0.3.2] - 2022-08-29
+
+feat(localization):
+- migrate localization to slang, export sliverStreamBuilderLocalization
+
 ## [0.3.1] - 2022-08-16
 
 feat(logs):

@@ -71,6 +71,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.2"
+  csv:
+    dependency: transitive
+    description:
+      name: csv
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -268,13 +275,27 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  slang:
+    dependency: transitive
+    description:
+      name: slang
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.7.0"
+  slang_flutter:
+    dependency: transitive
+    description:
+      name: slang_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.7.0"
   sliver_stream_builder:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.3.0"
+    version: "0.3.2"
   source_span:
     dependency: transitive
     description:
@@ -373,6 +394,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0+1"
+  yaml:
+    dependency: transitive
+    description:
+      name: yaml
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.1"
 sdks:
   dart: ">=2.17.0 <3.0.0"
   flutter: ">=3.0.0"
