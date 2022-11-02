@@ -1,3 +1,8 @@
+## [0.3.3] - 2022-11-03
+
+deps:
+- bump slang to 3.3.0
+
 ## [0.3.2] - 2022-08-29
 
 feat(localization):

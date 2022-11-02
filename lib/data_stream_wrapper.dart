@@ -33,7 +33,7 @@ Stream<T> dataStreamWrapper<T>(
   var closed = false;
   Completer? pause;
 
-  void _resume() {
+  void resume() {
     pause?.complete();
     pause = null;
   }
@@ -44,12 +44,12 @@ Stream<T> dataStreamWrapper<T>(
   controller = StreamController<T>(
     onCancel: () {
       closed = true;
-      _resume();
+      resume();
       // if onListen is not called we must close controller here
       controller.close();
     },
     onPause: () => pause = Completer(),
-    onResume: _resume,
+    onResume: resume,
     onListen: () async {
       do {
         try {

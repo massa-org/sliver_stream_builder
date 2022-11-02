@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:sliver_stream_builder/sliver_stream_builder.dart';
 
 Stream<String> loadError() {
-  var i = 0;
   return dataStreamWrapper(
     () async {
       throw 'errror';
