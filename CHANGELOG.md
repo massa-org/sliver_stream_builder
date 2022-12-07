@@ -1,3 +1,8 @@
+## [0.3.5] - 2022-12-07
+
+fix:
+- `it.done` missed param
+
 ## [0.3.4] - 2022-12-07
 
 feat(dataStreamHelper):

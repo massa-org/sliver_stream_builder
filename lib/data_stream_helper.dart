@@ -25,8 +25,8 @@ class DSHState<IteratorState, Result> {
 
   const DSHState(this.current);
 
-  DSHNextResultDone<IteratorState, Result> done() {
-    return const DSHNextResultDone();
+  DSHNextResultDone<IteratorState, Result> done([Iterable<Result>? data]) {
+    return DSHNextResultDone(data);
   }
 
   DSHNextResultNext<IteratorState, Result> next(
