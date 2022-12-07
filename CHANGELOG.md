@@ -1,3 +1,12 @@
+## [0.3.4] - 2022-12-07
+
+feat(dataStreamHelper):
+- `it.next` accept iterable
+- `it.done` accept data iterable
+- `dataStreamWrapper` accept iterable
+deps:
+- bump slang to 3.5.0
+
 ## [0.3.3] - 2022-11-03
 
 deps:

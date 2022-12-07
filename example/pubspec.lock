@@ -281,21 +281,21 @@ packages:
       name: slang
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.1"
+    version: "3.5.0"
   slang_flutter:
     dependency: transitive
     description:
       name: slang_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.0"
+    version: "3.5.0"
   sliver_stream_builder:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.3.2"
+    version: "0.3.3"
   source_span:
     dependency: transitive
     description:

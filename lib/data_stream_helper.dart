@@ -8,13 +8,14 @@ class DSHNextResult<IteratorState, Result> {
 
 class DSHNextResultDone<IteratorState, Result>
     extends DSHNextResult<IteratorState, Result> {
-  const DSHNextResultDone();
+  final Iterable<Result>? data;
+  const DSHNextResultDone([this.data]);
 }
 
 class DSHNextResultNext<IteratorState, Result>
     extends DSHNextResult<IteratorState, Result> {
   final IteratorState nextState;
-  final List<Result> data;
+  final Iterable<Result> data;
 
   const DSHNextResultNext(this.data, this.nextState);
 }
@@ -29,7 +30,7 @@ class DSHState<IteratorState, Result> {
   }
 
   DSHNextResultNext<IteratorState, Result> next(
-    List<Result> data,
+    Iterable<Result> data,
     IteratorState nextState,
   ) {
     return DSHNextResultNext(data, nextState);
@@ -48,12 +49,19 @@ class DSHFluentHelper<IteratorState> {
         next,
   ) {
     DSHState<IteratorState, Result> state = DSHState(initialState);
+    bool done = false;
     return dataStreamWrapper(() async {
+      if (done) return null;
       final rnext = await next(state);
 
       if (rnext is DSHNextResultNext<IteratorState, Result>) {
         state = DSHState(rnext.nextState);
         return rnext.data;
+      }
+      if (rnext is DSHNextResultDone<IteratorState, Result> &&
+          rnext.data != null) {
+        done = true;
+        return rnext.data!;
       }
       return null;
     });

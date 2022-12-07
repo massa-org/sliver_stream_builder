@@ -28,7 +28,7 @@ import 'dart:async';
 /// }
 /// ```
 Stream<T> dataStreamWrapper<T>(
-  FutureOr<List<T>?> Function() next,
+  FutureOr<Iterable<T>?> Function() next,
 ) {
   var closed = false;
   Completer? pause;
