@@ -23,14 +23,6 @@ class SliverStreamErrorExample extends StatelessWidget {
         child: CustomScrollView(
           slivers: [
             SliverStreamBuilder<String>(
-              sliverBuilder: (_, delegate, {key}) => SliverGrid(
-                delegate: delegate,
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 100,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
-              ),
               stream: loadError(),
               builder: (ctx, url) => CachedNetworkImage(imageUrl: url),
             ),

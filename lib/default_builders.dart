@@ -25,17 +25,15 @@ Widget _defaultErrorBuilder(
 ) {
   return Center(
     child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const SizedBox(
-          height: 8,
-        ),
-        Text(
-          error.errorMessage ?? L.genericLoadingError,
-          style: TextStyle(color: Theme.of(context).errorColor),
-        ),
-        TextButton(
-          onPressed: error.retryCb,
-          child: Text(L.retryButton),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: TextButton.icon(
+            onPressed: error.retryCb,
+            icon: const Icon(Icons.refresh),
+            label: const Text('Loading error, retry'),
+          ),
         )
       ],
     ),

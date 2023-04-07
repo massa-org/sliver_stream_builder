@@ -1,19 +1,15 @@
 name: sliver_stream_builder
 description: Package to transform data stream to sliver list or sliver grid
-version: 0.3.5
+version: 0.4.0
 repository: https://github.com/massa-org/sliver_stream_builder
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
-  flutter: ">=2.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-
-  slang: ^3.5.0
-  slang_flutter: ^3.5.0
-
+    
 dev_dependencies:
   flutter_test:
     sdk: flutter
